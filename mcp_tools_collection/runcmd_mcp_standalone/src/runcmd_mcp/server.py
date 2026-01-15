@@ -68,26 +68,24 @@ def _svc() -> RunCmdService:
     },
 )
 def run_command(
-    command: CommandStr, timeout: TimeoutInt = 30, working_directory: WorkingDirectoryStr = None
+    command: CommandStr,
+    timeout: TimeoutInt = 30,
+    working_directory: WorkingDirectoryStr = None,
 ) -> Dict[str, Any]:
     """
     异步执行系统命令
-    
+
     Args:
         command: 要执行的命令
         timeout: 超时秒数 (1-3600)，默认 30 秒
         working_directory: 工作目录（可选，默认为当前目录）
-        
+
     Returns:
         包含token和状态信息的字典
     """
     try:
         token = _svc().run_command(command, timeout, working_directory)
-        return {
-            "token": token,
-            "status": "pending",
-            "message": "submitted"
-        }
+        return {"token": token, "status": "pending", "message": "submitted"}
     except Exception as e:
         return {"error": str(e)}
 
@@ -103,15 +101,13 @@ def run_command(
         "openWorldHint": False,
     },
 )
-def query_command_status(
-    token: str
-) -> Dict[str, Any]:
+def query_command_status(token: str) -> Dict[str, Any]:
     """
     查询命令执行状态和结果
-    
+
     Args:
         token: 任务 token (GUID 字符串)
-        
+
     Returns:
         包含命令状态和结果的字典
     """
