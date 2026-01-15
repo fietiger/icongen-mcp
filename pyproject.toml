@@ -4,12 +4,12 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "icogen-mcp"
-version = "0.1.0"
-description = "A Model Context Protocol (MCP) service for converting PNG files to ICO files"
+version = "0.1.1"
+description = "A Model Context Protocol (MCP) service for converting PNG files to ICO files with customizable icon dimensions"
 readme = "README.md"
 license = {text = "MIT"}
 authors = [
-    {name = "Author", email = "author@example.com"},
+    {name = "icogen-mcp contributors", email = "maintainer@example.com"},
 ]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -38,8 +38,9 @@ dev = [
 icogen-mcp = "icogen_mcp.__main__:main"
 
 [project.urls]
-Homepage = "https://github.com/yourusername/icogen-mcp"
-Repository = "https://github.com/yourusername/icogen-mcp"
+Homepage = "https://github.com/username/icogen-mcp"
+Repository = "https://github.com/username/icogen-mcp"
+Documentation = "https://github.com/username/icogen-mcp/blob/main/README.md"
 
 [tool.setuptools.packages.find]
 where = ["src"]
