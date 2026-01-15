@@ -19,8 +19,9 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
 ]
 dependencies = [
-    "icogen-mcp>=0.1.2",
-    "runcmd-mcp>=0.1.0",
+    "Pillow>=9.0.0",
+    "fastmcp>=0.1.0",
+    "pydantic>=2.0.0",
 ]
 
 [project.optional-dependencies]
