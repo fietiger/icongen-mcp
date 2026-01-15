@@ -1,6 +1,6 @@
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]
-build-backend = "setuptools.build_meta"
+build-backend = "setuptools"
 
 [project]
 name = "mcp-tools-collection"
@@ -9,33 +9,28 @@ description = "A collection of Model Context Protocol (MCP) tools"
 readme = "README.md"
 license = {text = "MIT"}
 authors = [
-    {name = "MCP Tools Collection contributors", email = "maintainer@example.com"},
+    {name = "Developer", email = "developer@example.com"},
 ]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+]
+dependencies = [
+    "icogen-mcp>=0.1.2",
+    "runcmd-mcp>=0.1.0",
 ]
 
 [project.optional-dependencies]
-icogen = [
-    "icogen-mcp>=0.1.0",
-]
-runcmd = [
-    "runcmd-mcp>=0.1.0",
-]
-all = [
-    "icogen-mcp>=0.1.0",
-    "runcmd-mcp>=0.1.0",
+dev = [
+    "pytest>=6.0",
+    "black>=22.0.0",
+    "flake8>=4.0.0",
 ]
 
 [project.urls]
 Homepage = "https://github.com/username/mcp-tools-collection"
-Repository = "https://github.com/username/mcp-tools-collection"
+Repository = "https://github.com/username/mcp-tools-collection.git"
 Documentation = "https://github.com/username/mcp-tools-collection/blob/main/README.md"
-

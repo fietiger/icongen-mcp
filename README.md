@@ -1,64 +1,72 @@
 # MCP Tools Collection
 
-这是一个MCP（Model Context Protocol）工具集合，包含多个独立的MCP服务工具。
+This repository contains a collection of Model Context Protocol (MCP) tools organized in a modular structure.
 
-## 包含的工具
+## Project Structure
+
+```
+icongen-mcp/                           # Main project directory
+├── mcp_tools_collection/              # Tools collection directory
+│   ├── icogen_mcp_standalone/         # Standalone PNG to ICO converter
+│   │   ├── src/icogen_mcp/            # Source code
+│   │   ├── pyproject.toml             # Project configuration
+│   │   ├── README.md                  # Documentation
+│   │   └── LICENSE                    # License
+│   ├── runcmd_mcp_standalone/         # Standalone async command executor
+│   │   ├── src/runcmd_mcp/            # Source code
+│   │   ├── pyproject.toml             # Project configuration
+│   │   ├── README.md                  # Documentation
+│   │   └── LICENSE                    # License
+│   └── README.md                      # Collection documentation
+├── pyproject.toml                     # Main project configuration
+└── README.md                          # This file
+```
+
+## Tools Included
 
 ### 1. icogen-mcp
-- **功能**: PNG到ICO图标转换工具
-- **用途**: 将PNG图像文件转换为Windows ICO图标文件，支持多种尺寸
+A Model Context Protocol (MCP) service for converting PNG files to ICO files with customizable icon dimensions.
 
 ### 2. runcmd-mcp
-- **功能**: 异步命令执行工具
-- **用途**: 异步执行系统命令并查询执行状态
+A Model Context Protocol (MCP) service for executing system commands asynchronously with status tracking.
 
-## 项目结构
+## Installation
 
-```
-mcp_tools_collection/
-├── icogen_mcp_standalone/      # PNG转ICO工具独立项目
-│   ├── src/
-│   │   └── icogen_mcp/
-│   ├── pyproject.toml
-│   ├── README.md
-│   └── LICENSE
-├── runcmd_mcp_standalone/      # 异步命令执行工具独立项目
-│   ├── src/
-│   │   └── runcmd_mcp/
-│   ├── pyproject.toml
-│   ├── README.md
-│   └── LICENSE
-└── README.md                   # 本文件
-```
+Each tool can be installed independently:
 
-## 安装说明
-
-每个工具都是独立的Python包，可以分别安装：
-
-### 安装icogen-mcp
 ```bash
+# Install icogen-mcp
 cd mcp_tools_collection/icogen_mcp_standalone
 pip install -e .
-```
 
-### 安装runcmd-mcp
-```bash
+# Install runcmd-mcp
 cd mcp_tools_collection/runcmd_mcp_standalone
 pip install -e .
 ```
 
-也可以通过可选依赖安装特定工具：
+Or install the entire collection:
+
 ```bash
-# 安装icogen-mcp
-pip install -e .[icogen]
-
-# 安装runcmd-mcp
-pip install -e .[runcmd]
-
-# 安装所有工具
-pip install -e .[all]
+pip install -e .
 ```
 
-## 各工具详情
+## Usage
 
-请参阅各个工具目录下的README.md文件获取详细使用说明。
+After installation, each tool can be run as a standalone MCP service:
+
+```bash
+# Run icogen-mcp service
+icogen-mcp
+
+# Run runcmd-mcp service
+runcmd-mcp
+```
+
+## Development
+
+This project follows a modular design where each MCP tool is developed as a standalone package that can be published independently. This allows for:
+
+- Independent versioning of each tool
+- Separate testing and CI/CD pipelines
+- Easy maintenance and updates
+- Clear separation of concerns

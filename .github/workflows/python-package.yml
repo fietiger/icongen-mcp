@@ -29,18 +29,26 @@ jobs:
         
     - name: Lint with flake8
       run: |
-        flake8 src/icogen_mcp/ --count --select=E9,F63,F7,F82 --show-source --statistics
-        flake8 src/icogen_mcp/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        flake8 mcp_tools_collection/icogen_mcp_standalone/src/icogen_mcp/ --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 mcp_tools_collection/icogen_mcp_standalone/src/icogen_mcp/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        # Also check runcmd_mcp
+        flake8 mcp_tools_collection/runcmd_mcp_standalone/src/runcmd_mcp/ --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 mcp_tools_collection/runcmd_mcp_standalone/src/runcmd_mcp/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
         
     - name: Format check with black
       run: |
-        black --check src/icogen_mcp/
+        black --check mcp_tools_collection/icogen_mcp_standalone/src/icogen_mcp/
+        black --check mcp_tools_collection/runcmd_mcp_standalone/src/runcmd_mcp/
         
     - name: Run tests (if any exist)
       run: |
         # Check if tests directory exists before running tests
         if [ -d "tests" ]; then
           pytest tests/ -v
+        elif [ -d "mcp_tools_collection/icogen_mcp_standalone/tests" ]; then
+          pytest mcp_tools_collection/icogen_mcp_standalone/tests/ -v
+        elif [ -d "mcp_tools_collection/runcmd_mcp_standalone/tests" ]; then
+          pytest mcp_tools_collection/runcmd_mcp_standalone/tests/ -v
         else
           echo "No tests directory found. Skipping tests."
         fi
