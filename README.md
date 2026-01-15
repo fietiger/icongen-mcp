@@ -1,59 +1,64 @@
-# icogen-mcp
+# MCP Tools Collection
 
-A Model Context Protocol (MCP) service that enables AI assistants and other tools to convert PNG image files to Windows ICO icon files. The service provides a standardized interface for generating multi-resolution ICO files from PNG sources with customizable icon dimensions.
+这是一个MCP（Model Context Protocol）工具集合，包含多个独立的MCP服务工具。
 
-## Features
+## 包含的工具
 
-- Convert PNG files to multi-size ICO files with a single tool call
-- Support for custom icon dimensions (defaults to 16x16, 32x32, 48x48, 64x64)
-- Flexible output options - save to file or return binary data
-- Built on the FastMCP framework for reliable MCP compliance
-- Designed specifically for integration with AI assistants and automated workflows
-- Utilizes Pillow for high-quality image processing
+### 1. icogen-mcp
+- **功能**: PNG到ICO图标转换工具
+- **用途**: 将PNG图像文件转换为Windows ICO图标文件，支持多种尺寸
 
-## Installation
+### 2. runcmd-mcp
+- **功能**: 异步命令执行工具
+- **用途**: 异步执行系统命令并查询执行状态
 
+## 项目结构
+
+```
+mcp_tools_collection/
+├── icogen_mcp_standalone/      # PNG转ICO工具独立项目
+│   ├── src/
+│   │   └── icogen_mcp/
+│   ├── pyproject.toml
+│   ├── README.md
+│   └── LICENSE
+├── runcmd_mcp_standalone/      # 异步命令执行工具独立项目
+│   ├── src/
+│   │   └── runcmd_mcp/
+│   ├── pyproject.toml
+│   ├── README.md
+│   └── LICENSE
+└── README.md                   # 本文件
+```
+
+## 安装说明
+
+每个工具都是独立的Python包，可以分别安装：
+
+### 安装icogen-mcp
 ```bash
-pip install icogen-mcp
+cd mcp_tools_collection/icogen_mcp_standalone
+pip install -e .
 ```
 
-## Usage
-
-This service is designed to work with MCP-compatible clients. Once integrated, you can use the `convert_png_to_ico` tool to convert PNG files to ICO format with customizable dimensions.
-## Configuration Reference
-``` json
-{
-  "mcpServers": {
-    "icogen-mcp": {
-      "command": "uvx",
-      "args": [
-        "icogen-mcp"
-      ]
-    }
-  }
-}
+### 安装runcmd-mcp
+```bash
+cd mcp_tools_collection/runcmd_mcp_standalone
+pip install -e .
 ```
-## Use Cases
 
-- Icon generation for desktop applications
-- Automated asset conversion in build pipelines
-- AI-assisted graphic design workflows
-- Integration with development tools and IDEs
+也可以通过可选依赖安装特定工具：
+```bash
+# 安装icogen-mcp
+pip install -e .[icogen]
 
-## Dependencies
+# 安装runcmd-mcp
+pip install -e .[runcmd]
 
-- Pillow: For image processing
-- fastmcp: For MCP protocol implementation
-- pydantic: For data validation
+# 安装所有工具
+pip install -e .[all]
+```
 
-## Architecture
+## 各工具详情
 
-The service implements the Model Context Protocol specification and provides a single primary function:
-
-- `convert_png_to_ico`: Converts a PNG file to an ICO file with customizable dimensions
-
-The service leverages the Pillow library for high-quality image resizing and ICO format generation, supporting multiple resolutions within a single ICO file.
-
-## License
-
-MIT
+请参阅各个工具目录下的README.md文件获取详细使用说明。

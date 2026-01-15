@@ -3,13 +3,13 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "icogen-mcp"
-version = "0.1.2"
-description = "A Model Context Protocol (MCP) service for converting PNG files to ICO files with customizable icon dimensions"
+name = "mcp-tools-collection"
+version = "1.0.0"
+description = "A collection of Model Context Protocol (MCP) tools"
 readme = "README.md"
 license = {text = "MIT"}
 authors = [
-    {name = "icogen-mcp contributors", email = "maintainer@example.com"},
+    {name = "MCP Tools Collection contributors", email = "maintainer@example.com"},
 ]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -21,30 +21,21 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
 ]
-dependencies = [
-    "Pillow>=9.0.0",
-    "fastmcp>=0.1.0",
-    "pydantic>=2.0.0",
-]
 
 [project.optional-dependencies]
-dev = [
-    "pytest>=7.0.0",
-    "black>=23.0.0",
-    "flake8>=6.0.0",
+icogen = [
+    "icogen-mcp>=0.1.0",
+]
+runcmd = [
+    "runcmd-mcp>=0.1.0",
+]
+all = [
+    "icogen-mcp>=0.1.0",
+    "runcmd-mcp>=0.1.0",
 ]
 
-[project.scripts]
-icogen-mcp = "icogen_mcp.__main__:main"
-
 [project.urls]
-Homepage = "https://github.com/username/icogen-mcp"
-Repository = "https://github.com/username/icogen-mcp"
-Documentation = "https://github.com/username/icogen-mcp/blob/main/README.md"
+Homepage = "https://github.com/username/mcp-tools-collection"
+Repository = "https://github.com/username/mcp-tools-collection"
+Documentation = "https://github.com/username/mcp-tools-collection/blob/main/README.md"
 
-[tool.setuptools.packages.find]
-where = ["src"]
-include = ["icogen_mcp*"]
-
-[project.entry-points."mcp.servers"]
-icogen-mcp = "icogen_mcp.__main__:main"
