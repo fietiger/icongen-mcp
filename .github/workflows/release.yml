@@ -1,0 +1,28 @@
+name: Release
+
+on:
+  push:
+    tags: [ 'v*' ]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Generate Changelog
+        run: |
+          echo "# Changelog" > RELEASE_CHANGELOG.md
+          git log $(git describe --tags --abbrev=0 $(git describe --tags --abbrev=0)^).."${GITHUB_REF#refs/tags/}" --pretty=format:"- %s (%h)" >> RELEASE_CHANGELOG.md
+          
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          body_path: RELEASE_CHANGELOG.md
+          files: dist/**
