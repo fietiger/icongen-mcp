@@ -85,10 +85,21 @@ class RunCmdService:
                 if token in self.commands:
                     self.commands[token]["status"] = "running"
 
-            encoding = "utf-8" if shell_type == "powershell" else "gbk"
+            encoding = "gbk"
 
             if shell_type == "powershell":
-                cmd_args = ["powershell", "-Command", command]
+                # 添加 -ExecutionPolicy Bypass 避免执行策略阻塞
+                # 添加 -NoLogo 减少启动输出
+                cmd_args = [
+                    "powershell",
+                    "-NoProfile",
+                    "-NoLogo",
+                    "-NonInteractive",
+                    "-ExecutionPolicy",
+                    "Bypass",
+                    "-Command",
+                    command,
+                ]
             else:
                 cmd_args = ["cmd", "/c", command]
 
@@ -99,6 +110,7 @@ class RunCmdService:
                 timeout=timeout,
                 cwd=working_directory,
                 encoding=encoding,
+                stdin=subprocess.DEVNULL,  # 防止等待输入导致挂起
             )
 
             execution_time = time.time() - start_time
@@ -123,9 +135,7 @@ class RunCmdService:
                         {
                             "status": "completed",
                             "stdout": "",
-                            "stderr": (
-                                f"Command timed out after {timeout} seconds"
-                            ),
+                            "stderr": (f"Command timed out after {timeout} seconds"),
                             "exit_code": -1,
                             "execution_time": execution_time,
                             "timeout_occurred": True,

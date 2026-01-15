@@ -54,8 +54,7 @@ def init_service(service: RunCmdService) -> None:
 def _svc() -> RunCmdService:
     if _service is None:
         raise RuntimeError(
-            "Service not initialized. "
-            "Call init_service() before running the server."
+            "Service not initialized. " "Call init_service() before running the server."
         )
     return _service
 
@@ -93,9 +92,7 @@ def run_command(
         包含token和状态信息的字典
     """
     try:
-        token = _svc().run_command(
-            command, shell_type, timeout, working_directory
-        )
+        token = _svc().run_command(command, shell_type, timeout, working_directory)
         return {"token": token, "status": "pending", "message": "submitted"}
     except Exception as e:
         return {"error": str(e)}
