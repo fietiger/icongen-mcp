@@ -20,7 +20,19 @@ pip install icogen-mcp
 ## Usage
 
 This service is designed to work with MCP-compatible clients. Once integrated, you can use the `convert_png_to_ico` tool to convert PNG files to ICO format with customizable dimensions.
-
+## Configuration Reference
+``` json
+{
+  "mcpServers": {
+    "icogen-mcp": {
+      "command": "uvx",
+      "args": [
+        "icogen-mcp"
+      ]
+    }
+  }
+}
+```
 ## Use Cases
 
 - Icon generation for desktop applications
