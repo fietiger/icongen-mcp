@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "icogen-mcp"
-version = "0.1.2"
+version = "0.1.3"
 description = "A Model Context Protocol (MCP) service for converting PNG files to ICO files with customizable icon dimensions"
 readme = "README.md"
 license = {text = "MIT"}
