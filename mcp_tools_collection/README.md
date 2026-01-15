@@ -14,6 +14,11 @@
 - **用途**: 异步执行系统命令并查询执行状态
 - **目录**: `runcmd_mcp_standalone/`
 
+### 3. winterm-mcp
+- **功能**: Windows 终端命令执行工具
+- **用途**: 专门支持 Windows 终端的异步命令执行，支持 PowerShell 和 Cmd
+- **目录**: `winterm_mcp_standalone/`
+
 ## 使用说明
 
 每个工具都是独立的Python包，可以分别安装和使用：
@@ -27,6 +32,12 @@ pip install -e .
 ### 安装runcmd-mcp
 ```bash
 cd runcmd_mcp_standalone
+pip install -e .
+```
+
+### 安装winterm-mcp
+```bash
+cd winterm_mcp_standalone
 pip install -e .
 ```
 
