@@ -2,6 +2,7 @@ import io
 from typing import Optional, List, Tuple
 from PIL import Image
 
+
 class IcoGeneratorService:
     """
     核心ICO生成服务:
@@ -9,9 +10,16 @@ class IcoGeneratorService:
     - 支持自定义ICO文件中的图标尺寸
     - 可以将生成的ICO文件保存到指定路径或返回二进制数据
     """
+
     def __init__(self):
         pass
-    def png_to_ico(self, png_path: str, output_path: Optional[str] = None, sizes: Optional[List[Tuple[int, int]]] = None) -> Optional[bytes]:
+
+    def png_to_ico(
+        self,
+        png_path: str,
+        output_path: Optional[str] = None,
+        sizes: Optional[List[Tuple[int, int]]] = None,
+    ) -> Optional[bytes]:
         """
         将PNG文件转换为ICO文件
 
@@ -42,12 +50,14 @@ class IcoGeneratorService:
 
         # 保存为ICO文件
         if images:
-            images[0].save(ico_buffer, format='ICO', append_images=images[1:], sizes=sizes)
+            images[0].save(
+                ico_buffer, format="ICO", append_images=images[1:], sizes=sizes
+            )
             ico_data = ico_buffer.getvalue()
 
             # 保存到文件或返回二进制数据
             if output_path:
-                with open(output_path, 'wb') as f:
+                with open(output_path, "wb") as f:
                     f.write(ico_data)
                 return None
             else:

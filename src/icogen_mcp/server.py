@@ -1,41 +1,40 @@
 from __future__ import annotations
 
-from typing import Annotated,Optional, List, Tuple, Any, Dict, Union
+from typing import Annotated, Optional, List, Any, Dict
 from mcp.server.fastmcp import FastMCP
-import io
 from .service import IcoGeneratorService
-from pydantic import BaseModel, Field, validator
+from pydantic import Field
 
-PngPath =  Annotated[
-        str, 
-        Field(
-            description="PNG源文件的完整路径，必须是有效的PNG图像文件",
-            pattern=r".*\.png$",
-            min_length=1,
-            max_length=500
-        )
-    ]
-IcoPath =  Annotated[
-        Optional[str], 
-        Field(
-            description="ICO输出文件的路径，如果不指定则在源文件同目录下生成同名ICO文件",
-            pattern=r".*\.ico$",
-            default=None,
-            max_length=500
-        )
-    ]
+PngPath = Annotated[
+    str,
+    Field(
+        description="PNG源文件的完整路径，必须是有效的PNG图像文件",
+        pattern=r".*\.png$",
+        min_length=1,
+        max_length=500,
+    ),
+]
+IcoPath = Annotated[
+    Optional[str],
+    Field(
+        description="ICO输出文件的路径，如果不指定则在源文件同目录下生成同名ICO文件",
+        pattern=r".*\.ico$",
+        default=None,
+        max_length=500,
+    ),
+]
 SizeNoted = Annotated[
-        Optional[List[List[int]]], 
-        Field(
-            description="ICO文件包含的图标尺寸列表，每个子列表包含[宽度, 高度]，如[[16,16], [32,32], [48,48]]。如果不指定，将使用标准尺寸：16x16, 32x32, 48x48, 64x64",
-            default=None,
-            examples=[
-                [[16, 16], [32, 32]],
-                [[16, 16], [32, 32], [48, 48], [64, 64]],
-                [[256, 256]]
-            ]
-        )
-    ]
+    Optional[List[List[int]]],
+    Field(
+        description="ICO文件包含的图标尺寸列表，每个子列表包含[宽度, 高度]，如[[16,16], [32,32], [48,48]]。如果不指定，将使用标准尺寸：16x16, 32x32, 48x48, 64x64",
+        default=None,
+        examples=[
+            [[16, 16], [32, 32]],
+            [[16, 16], [32, 32], [48, 48], [64, 64]],
+            [[256, 256]],
+        ],
+    ),
+]
 # FastMCP app
 app = FastMCP("icogen-mcp")
 
@@ -48,14 +47,16 @@ def init_service(service: IcoGeneratorService) -> None:
     _service = service
 
 
-
 def _svc() -> IcoGeneratorService:
     if _service is None:
-        raise RuntimeError("Service not initialized. Call init_service() before running the server.")
+        raise RuntimeError(
+            "Service not initialized. Call init_service() before running the server."
+        )
     return _service
 
 
 # ------------------ Tools ------------------
+
 
 @app.tool(
     name="convert_png_to_ico",
@@ -65,10 +66,12 @@ def _svc() -> IcoGeneratorService:
         "readOnlyHint": False,  # 会创建新文件，不是只读操作
         "destructiveHint": False,  # 不会破坏原文件，只是创建新文件
         "idempotentHint": True,  # 相同输入会产生相同输出
-        "openWorldHint": True   # 与文件系统交互
-    }
+        "openWorldHint": True,  # 与文件系统交互
+    },
 )
-def convert_png_to_ico(png_path:PngPath, output_path: IcoPath = None, sizes: SizeNoted = None) -> Dict[str, Any]:
+def convert_png_to_ico(
+    png_path: PngPath, output_path: IcoPath = None, sizes: SizeNoted = None
+) -> Dict[str, Any]:
     """
     将PNG文件转换为ICO文件
 
@@ -85,10 +88,10 @@ def convert_png_to_ico(png_path:PngPath, output_path: IcoPath = None, sizes: Siz
         size_tuples = None
         if sizes is not None:
             size_tuples = [tuple(size) for size in sizes]  # type: ignore
-        
+
         # 调用服务生成ICO
         result = _svc().png_to_ico(png_path, output_path, size_tuples)
-        
+
         if output_path:
             return {"success": True, "message": f"ICO文件已生成: {output_path}"}
         else:
