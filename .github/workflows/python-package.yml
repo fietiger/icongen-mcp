@@ -74,7 +74,17 @@ jobs:
         
     - name: Build package
       run: |
+        # Build each standalone package separately
+        cd mcp_tools_collection/icogen_mcp_standalone
         python -m build
+        cd ../..
+        cd mcp_tools_collection/runcmd_mcp_standalone
+        python -m build
+        cd ../..
+        # Combine distributions
+        mkdir -p dist
+        cp mcp_tools_collection/icogen_mcp_standalone/dist/* dist/ 2>/dev/null || true
+        cp mcp_tools_collection/runcmd_mcp_standalone/dist/* dist/ 2>/dev/null || true
         ls -la dist/
         
     - name: Upload build artifacts
