@@ -6,10 +6,12 @@ import subprocess
 import threading
 import uuid
 import time
-import json
+import os
 from datetime import datetime
 from typing import Dict, Optional, Any
-import queue
+
+# 环境变量名称
+ENV_PYTHON_PATH = "RUNCMD_PYTHON_PATH"
 
 
 class RunCmdService:
@@ -22,7 +24,10 @@ class RunCmdService:
         self.lock = threading.Lock()
 
     def run_command(
-        self, command: str, timeout: int = 30, working_directory: Optional[str] = None
+        self,
+        command: str,
+        timeout: int = 30,
+        working_directory: Optional[str] = None,
     ) -> str:
         """
         异步运行命令
@@ -67,7 +72,11 @@ class RunCmdService:
         return token
 
     def _execute_command(
-        self, token: str, command: str, timeout: int, working_directory: Optional[str]
+        self,
+        token: str,
+        command: str,
+        timeout: int,
+        working_directory: Optional[str],
     ):
         """
         在单独线程中执行命令
@@ -80,6 +89,14 @@ class RunCmdService:
                 if token in self.commands:
                     self.commands[token]["status"] = "running"
 
+            # 处理 Python 路径环境变量
+            env = None
+            python_path = os.environ.get(ENV_PYTHON_PATH)
+            if python_path and os.path.isfile(python_path):
+                env = os.environ.copy()
+                python_dir = os.path.dirname(python_path)
+                env["PATH"] = f"{python_dir}{os.pathsep}{env.get('PATH', '')}"
+
             # 执行命令
             result = subprocess.run(
                 command,
@@ -88,6 +105,7 @@ class RunCmdService:
                 text=True,
                 timeout=timeout,
                 cwd=working_directory,
+                env=env,
             )
 
             execution_time = time.time() - start_time
@@ -114,7 +132,9 @@ class RunCmdService:
                         {
                             "status": "completed",
                             "stdout": "",
-                            "stderr": f"Command timed out after {timeout} seconds",
+                            "stderr": (
+                                f"Command timed out after {timeout} seconds"
+                            ),
                             "exit_code": -1,
                             "execution_time": execution_time,
                             "timeout_occurred": True,

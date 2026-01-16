@@ -48,7 +48,8 @@ def init_service(service: RunCmdService) -> None:
 def _svc() -> RunCmdService:
     if _service is None:
         raise RuntimeError(
-            "Service not initialized. Call init_service() before running the server."
+            "Service not initialized. "
+            "Call init_service() before running the server."
         )
     return _service
 

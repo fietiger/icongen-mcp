@@ -1,6 +1,6 @@
 # runcmd-mcp
 
-**版本**: 0.1.3
+**版本**: 0.1.4
 
 runcmd-mcp 是一个Model Context Protocol (MCP) 服务，提供异步执行系统命令的功能。
 
