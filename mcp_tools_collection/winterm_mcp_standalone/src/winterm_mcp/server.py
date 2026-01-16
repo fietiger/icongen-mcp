@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Annotated, Optional, Dict, Any
 from mcp.server.fastmcp import FastMCP
-from .service import RunCmdService
+from .service import RunCmdService, get_version, setup_logging, __version__
 from pydantic import Field
 
 CommandStr = Annotated[
@@ -124,3 +124,50 @@ def query_command_status(token: str) -> Dict[str, Any]:
         return result
     except Exception as e:
         return {"error": str(e)}
+
+
+@app.tool(
+    name="get_version",
+    description="获取 winterm-mcp 服务的版本信息和运行状态。",
+    annotations={
+        "title": "版本信息",
+        "readOnlyHint": True,
+        "destructiveHint": False,
+        "idempotentHint": True,
+        "openWorldHint": False,
+    },
+)
+def get_version_tool() -> Dict[str, Any]:
+    """
+    获取 winterm-mcp 版本信息
+    
+    Returns:
+        包含版本号和服务状态的字典
+    """
+    import os
+    import sys
+    
+    try:
+        # 尝试获取 PowerShell 路径信息
+        ps_path = None
+        ps_error = None
+        try:
+            from .service import _find_powershell
+            ps_path = _find_powershell()
+        except FileNotFoundError as e:
+            ps_error = str(e)
+        
+        return {
+            "version": get_version(),
+            "service_status": "running",
+            "python_version": sys.version,
+            "platform": sys.platform,
+            "powershell_path": ps_path,
+            "powershell_error": ps_error,
+            "env": {
+                "WINTERM_POWERSHELL_PATH": os.environ.get("WINTERM_POWERSHELL_PATH"),
+                "WINTERM_LOG_LEVEL": os.environ.get("WINTERM_LOG_LEVEL"),
+            }
+        }
+    except Exception as e:
+        return {"error": str(e), "version": __version__}

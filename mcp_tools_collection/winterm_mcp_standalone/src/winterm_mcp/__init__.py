@@ -2,5 +2,8 @@
 winterm-mcp - Windows Terminal MCP Service
 """
 
-__version__ = "0.1.1"
+from .service import __version__, get_version, setup_logging
+
 __author__ = "winterm-mcp contributors"
+
+__all__ = ["__version__", "get_version", "setup_logging"]
