@@ -1,5 +1,7 @@
 # icogen-mcp
 
+**版本**: 0.1.3
+
 A Model Context Protocol (MCP) service that enables AI assistants and other tools to convert PNG image files to Windows ICO icon files. The service provides a standardized interface for generating multi-resolution ICO files from PNG sources with customizable icon dimensions.
 
 ## Features

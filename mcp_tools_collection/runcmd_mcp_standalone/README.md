@@ -1,5 +1,7 @@
 # runcmd-mcp
 
+**版本**: 0.1.3
+
 runcmd-mcp 是一个Model Context Protocol (MCP) 服务，提供异步执行系统命令的功能。
 
 ## 功能特点
@@ -53,7 +55,20 @@ pip install runcmd-mcp
 ```bash
 pip install -e .
 ```
-
+### MCP 配置
+在 MCP 客户端配置中添加：
+``` json
+{
+  "mcpServers": {
+    "runcmd-mcp": {
+      "command": "uvx",
+      "args": [
+        "runcmd-mcp"
+      ]
+    }
+  }
+}
+```
 启动MCP服务器:
 ```bash
 runcmd-mcp

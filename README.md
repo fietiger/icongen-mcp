@@ -1,5 +1,7 @@
 # MCP Tools Collection
 
+**版本**: 1.0.1
+
 This repository contains a collection of Model Context Protocol (MCP) tools organized in a modular structure.
 
 ## Project Structure
