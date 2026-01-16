@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Annotated, Optional, Dict, Any
 from mcp.server.fastmcp import FastMCP
-from .service import RunCmdService, get_version, setup_logging, __version__
+from .service import RunCmdService, get_version, __version__
 from pydantic import Field
 
 CommandStr = Annotated[
@@ -54,7 +54,8 @@ def init_service(service: RunCmdService) -> None:
 def _svc() -> RunCmdService:
     if _service is None:
         raise RuntimeError(
-            "Service not initialized. " "Call init_service() before running the server."
+            "Service not initialized. "
+            "Call init_service() before running the server."
         )
     return _service
 
@@ -92,7 +93,9 @@ def run_command(
         包含token和状态信息的字典
     """
     try:
-        token = _svc().run_command(command, shell_type, timeout, working_directory)
+        token = _svc().run_command(
+            command, shell_type, timeout, working_directory
+        )
         return {"token": token, "status": "pending", "message": "submitted"}
     except Exception as e:
         return {"error": str(e)}
@@ -140,13 +143,13 @@ def query_command_status(token: str) -> Dict[str, Any]:
 def get_version_tool() -> Dict[str, Any]:
     """
     获取 winterm-mcp 版本信息
-    
+
     Returns:
         包含版本号和服务状态的字典
     """
     import os
     import sys
-    
+
     try:
         # 尝试获取 PowerShell 路径信息
         ps_path = None
@@ -156,7 +159,7 @@ def get_version_tool() -> Dict[str, Any]:
             ps_path = _find_powershell()
         except FileNotFoundError as e:
             ps_error = str(e)
-        
+
         return {
             "version": get_version(),
             "service_status": "running",
@@ -165,7 +168,10 @@ def get_version_tool() -> Dict[str, Any]:
             "powershell_path": ps_path,
             "powershell_error": ps_error,
             "env": {
-                "WINTERM_POWERSHELL_PATH": os.environ.get("WINTERM_POWERSHELL_PATH"),
+                "WINTERM_POWERSHELL_PATH": os.environ.get(
+                    "WINTERM_POWERSHELL_PATH"
+                ),
+                "WINTERM_PYTHON_PATH": os.environ.get("WINTERM_PYTHON_PATH"),
                 "WINTERM_LOG_LEVEL": os.environ.get("WINTERM_LOG_LEVEL"),
             }
         }

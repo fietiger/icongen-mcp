@@ -13,7 +13,7 @@ from datetime import datetime
 from typing import Dict, Optional, Any, List
 
 # 版本号
-__version__ = "0.1.5"
+__version__ = "0.1.6"
 
 # 配置日志
 logger = logging.getLogger("winterm-mcp")
@@ -22,36 +22,36 @@ logger = logging.getLogger("winterm-mcp")
 def setup_logging(level: int = logging.INFO) -> None:
     """
     配置日志输出
-    
+
     Args:
         level: 日志级别，默认 INFO
-    
+
     日志输出位置：
     1. 控制台 (stderr)
     2. 文件: %TEMP%/winterm-mcp.log 或 /tmp/winterm-mcp.log
-    
+
     可通过环境变量配置：
     - WINTERM_LOG_LEVEL: 日志级别 (DEBUG/INFO/WARNING/ERROR/CRITICAL)
     - WINTERM_LOG_FILE: 自定义日志文件路径
     """
     import tempfile
-    
+
     formatter = logging.Formatter(
         "[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S"
     )
-    
+
     # 控制台输出
     console_handler = logging.StreamHandler()
     console_handler.setFormatter(formatter)
     logger.addHandler(console_handler)
-    
+
     # 文件输出
     log_file = os.environ.get("WINTERM_LOG_FILE")
     if not log_file:
         # 默认日志文件路径
         log_file = os.path.join(tempfile.gettempdir(), "winterm-mcp.log")
-    
+
     try:
         file_handler = logging.FileHandler(log_file, encoding="utf-8")
         file_handler.setFormatter(formatter)
@@ -59,9 +59,9 @@ def setup_logging(level: int = logging.INFO) -> None:
         logger.info(f"Log file: {log_file}")
     except Exception as e:
         logger.warning(f"Failed to create log file {log_file}: {e}")
-    
+
     logger.setLevel(level)
-    
+
     # 检查环境变量设置日志级别
     env_level = os.environ.get("WINTERM_LOG_LEVEL", "").upper()
     if env_level in ("DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"):
@@ -82,6 +82,7 @@ PWSH_PATHS: List[str] = [
 
 # 环境变量名称
 ENV_POWERSHELL_PATH = "WINTERM_POWERSHELL_PATH"
+ENV_PYTHON_PATH = "WINTERM_PYTHON_PATH"
 
 
 def _find_powershell() -> str:
@@ -101,7 +102,6 @@ def _find_powershell() -> str:
         FileNotFoundError: 如果找不到 PowerShell
     """
     logger.debug("Starting PowerShell path discovery...")
-    
     # 1. 检查用户配置的环境变量
     custom_path = os.environ.get(ENV_POWERSHELL_PATH)
     if custom_path:
@@ -156,10 +156,10 @@ def _find_powershell() -> str:
 def get_version() -> str:
     """
     获取 winterm-mcp 版本号
-    
+
     Returns:
         版本号字符串
-    """
+"""
     return __version__
 
 
@@ -210,12 +210,15 @@ class RunCmdService:
             命令执行的token
         """
         token = str(uuid.uuid4())
-        
+
         logger.info(
             f"Submitting command: token={token}, shell={shell_type}, "
             f"timeout={timeout}, cwd={working_directory}"
         )
-        logger.debug(f"Command content: {command[:100]}{'...' if len(command) > 100 else ''}")
+        logger.debug(
+            f"Command content: {command[:100]}"
+            f"{'...' if len(command) > 100 else ''}"
+        )
 
         cmd_info = {
             "token": token,
@@ -284,7 +287,20 @@ class RunCmdService:
                 cmd_args = ["cmd", "/c", command]
 
             logger.debug(f"[{token}] Executing: {cmd_args}")
-            
+
+            # 处理 Python 路径环境变量
+            env = None
+            python_path = os.environ.get(ENV_PYTHON_PATH)
+            if python_path and os.path.isfile(python_path):
+                env = os.environ.copy()
+                python_dir = os.path.dirname(python_path)
+                env["PATH"] = (
+                    f"{python_dir}{os.pathsep}{env.get('PATH', '')}"
+                )
+                logger.debug(
+                    f"[{token}] Using custom Python path: {python_path}"
+                )
+
             result = subprocess.run(
                 cmd_args,
                 capture_output=True,
@@ -293,16 +309,23 @@ class RunCmdService:
                 cwd=working_directory,
                 encoding=encoding,
                 stdin=subprocess.DEVNULL,  # 防止等待输入导致挂起
+                env=env,
             )
 
             execution_time = time.time() - start_time
-            
+
             logger.info(
                 f"[{token}] Command completed: exit_code={result.returncode}, "
                 f"time={execution_time:.3f}s"
             )
-            logger.debug(f"[{token}] stdout: {result.stdout[:200] if result.stdout else '(empty)'}")
-            logger.debug(f"[{token}] stderr: {result.stderr[:200] if result.stderr else '(empty)'}")
+            logger.debug(
+                f"[{token}] stdout: "
+                f"{result.stdout[:200] if result.stdout else '(empty)'}"
+            )
+            logger.debug(
+                f"[{token}] stderr: "
+                f"{result.stderr[:200] if result.stderr else '(empty)'}"
+            )
 
             with self.lock:
                 if token in self.commands:
@@ -375,7 +398,7 @@ class RunCmdService:
             包含命令状态的字典
         """
         logger.debug(f"Querying status for token: {token}")
-        
+
         with self.lock:
             if token not in self.commands:
                 logger.warning(f"Token not found: {token}")

@@ -1,7 +1,7 @@
 # winterm-mcp
 
 **更新日期**: 2026-01-16
-**版本**: 0.1.4
+**版本**: 0.1.6
 
 Windows Terminal MCP Service - 专门支持 Windows 终端的异步命令执行工具。
 
