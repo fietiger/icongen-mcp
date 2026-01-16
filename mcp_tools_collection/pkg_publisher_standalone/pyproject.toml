@@ -3,13 +3,13 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "runcmd-mcp"
-version = "0.2.0"
-description = "A Model Context Protocol (MCP) service for executing system commands asynchronously with real-time streaming output"
+name = "pkg-publisher"
+version = "0.1.4"
+description = "A Model Context Protocol (MCP) service for building and publishing Python packages to PyPI"
 readme = "README.md"
 license = {text = "MIT"}
 authors = [
-    {name = "runcmd-mcp contributors", email = "maintainer@example.com"},
+    {name = "pkg-publisher contributors", email = "maintainer@example.com"},
 ]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -24,28 +24,36 @@ classifiers = [
 dependencies = [
     "fastmcp>=0.1.0",
     "pydantic>=2.0.0",
-    "pywinpty>=2.0.0",
+    "build>=0.10.0",
+    "twine>=4.0.0",
+    "requests>=2.31.0",
+    "pywinpty>=2.0.0; sys_platform == 'win32'",
 ]
 
 [project.optional-dependencies]
 dev = [
     "pytest>=7.0.0",
-    "hypothesis>=6.0.0",
     "black>=23.0.0",
     "flake8>=6.0.0",
 ]
 
 [project.scripts]
-runcmd-mcp = "runcmd_mcp.__main__:main"
+pkg-publisher = "pkg_publisher.__main__:main"
 
 [project.urls]
-Homepage = "https://github.com/username/runcmd-mcp"
-Repository = "https://github.com/username/runcmd-mcp"
-Documentation = "https://github.com/username/runcmd-mcp/blob/main/README.md"
+Homepage = "https://github.com/username/pkg-publisher"
+Repository = "https://github.com/username/pkg-publisher"
+Documentation = "https://github.com/username/pkg-publisher/blob/main/README.md"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["runcmd_mcp*"]
+include = ["pkg_publisher*"]
 
 [project.entry-points."mcp.servers"]
-runcmd-mcp = "runcmd_mcp.__main__:main"
+pkg-publisher = "pkg_publisher.__main__:main"
+
+[tool.black]
+line-length = 88
+
+[tool.flake8]
+max-line-length = 88
