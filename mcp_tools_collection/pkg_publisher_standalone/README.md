@@ -1,7 +1,7 @@
 # pkg-publisher
 
-**更新日期**: 2026-01-16
-**版本**: 0.1.0
+**更新日期**: 2026-01-29
+**版本**: 0.1.6
 
 Python Package Publisher MCP Service - 专门用于构建和发布 Python 包到 PyPI 的 MCP 工具。
 
@@ -27,6 +27,8 @@ pip install -e .
 
 在 MCP 客户端配置中添加：
 
+**方式一：使用 uvx 从 PyPI 安装**
+
 ```json
 {
   "mcpServers": {
@@ -36,12 +38,16 @@ pip install -e .
         "pkg-publisher"
       ],
       "env": {
-        "PYPI_API_TOKEN": "your-pypi-api-token"
+        "PYPI_API_TOKEN": "your-pypi-api-token",
+        "TEST_PYPI_API_TOKEN": "your-testpypi-api-token",
+        "PKG_PUBLISHER_PYTHON_PATH": "D:\\ProgramData\\miniconda3\\python.exe"
       }
     }
   }
 }
 ```
+
+
 
 ### 环境配置
 

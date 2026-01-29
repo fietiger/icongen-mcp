@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pkg-publisher"
-version = "0.1.4"
+version = "0.1.6"
 description = "A Model Context Protocol (MCP) service for building and publishing Python packages to PyPI"
 readme = "README.md"
 license = {text = "MIT"}

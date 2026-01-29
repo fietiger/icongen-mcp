@@ -21,7 +21,7 @@ import requests
 from .streaming_buffer import StreamingBuffer
 from .executors import execute_with_pty_fallback
 
-__version__ = "0.1.4"
+__version__ = "0.1.6"
 
 ENV_PYTHON_PATH = "PKG_PUBLISHER_PYTHON_PATH"
 
