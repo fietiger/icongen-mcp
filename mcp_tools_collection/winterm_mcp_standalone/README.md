@@ -1,7 +1,7 @@
 # winterm-mcp
 
-**更新日期**: 2026-01-16
-**版本**: 0.1.6
+**更新日期**: 2026-01-29
+**版本**: 0.1.7
 
 Windows Terminal MCP Service - 专门支持 Windows 终端的异步命令执行工具。
 
@@ -28,6 +28,8 @@ pip install -e .
 
 在 MCP 客户端配置中添加：
 
+**基础配置**:
+
 ```json
 {
   "mcpServers": {
@@ -36,6 +38,26 @@ pip install -e .
       "args": [
         "winterm-mcp"
       ]
+    }
+  }
+}
+```
+
+**推荐配置（带环境变量）**:
+
+```json
+{
+  "mcpServers": {
+    "winterm": {
+      "command": "uvx",
+      "args": [
+        "winterm-mcp"
+      ],
+      "env": {
+        "WINTERM_POWERSHELL_PATH": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "WINTERM_CMD_PATH": "C:\\Windows\\System32\\cmd.exe",
+        "WINTERM_LOG_LEVEL": "DEBUG"
+      }
     }
   }
 }
