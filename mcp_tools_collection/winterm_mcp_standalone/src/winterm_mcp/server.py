@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Annotated, Optional, Dict, Any
 from mcp.server.fastmcp import FastMCP
-from .service import RunCmdService, get_version, __version__
+from .service import CommandService, get_version, __version__
 from pydantic import Field
 
 CommandStr = Annotated[
@@ -17,8 +17,8 @@ CommandStr = Annotated[
 ShellTypeStr = Annotated[
     str,
     Field(
-        description="Shell 类型 (powershell 或 cmd)，默认 powershell",
-        pattern="^(powershell|cmd)$",
+        description="Shell 类型 (powershell, cmd, executable)，默认 executable",
+        pattern="^(powershell|cmd|executable)$",
     ),
 ]
 
@@ -41,17 +41,33 @@ WorkingDirectoryStr = Annotated[
     ),
 ]
 
+ExecutableStr = Annotated[
+    Optional[str],
+    Field(
+        description="可执行文件路径（仅当 shell_type 为 executable 时使用）",
+        default=None,
+    ),
+]
+
+ArgsList = Annotated[
+    Optional[list[str]],
+    Field(
+        description="可执行文件参数列表（仅当 shell_type 为 executable 时使用）",
+        default=None,
+    ),
+]
+
 app = FastMCP("winterm-mcp")
 
-_service: Optional[RunCmdService] = None
+_service: Optional[CommandService] = None
 
 
-def init_service(service: RunCmdService) -> None:
+def init_service(service: CommandService) -> None:
     global _service
     _service = service
 
 
-def _svc() -> RunCmdService:
+def _svc() -> CommandService:
     if _service is None:
         raise RuntimeError(
             "Service not initialized. "
@@ -76,25 +92,37 @@ def _svc() -> RunCmdService:
 )
 def run_command(
     command: CommandStr,
-    shell_type: ShellTypeStr = "powershell",
+    shell_type: ShellTypeStr = "executable",
     timeout: TimeoutInt = 30,
     working_directory: WorkingDirectoryStr = None,
+    executable: ExecutableStr = None,
+    args: ArgsList = None,
+    enable_streaming: bool = False,
 ) -> Dict[str, Any]:
     """
     异步执行Windows终端命令
 
     Args:
         command: 要执行的命令
-        shell_type: Shell 类型 (powershell 或 cmd)，默认 powershell
+        shell_type: Shell 类型 (powershell, cmd, executable)，默认 executable
         timeout: 超时秒数 (1-3600)，默认 30 秒
         working_directory: 工作目录（可选，默认为当前目录）
+        executable: 可执行文件路径（仅当 shell_type 为 executable 时使用）
+        args: 可执行文件参数列表（仅当 shell_type 为 executable 时使用）
+        enable_streaming: 启用实时流式输出
 
     Returns:
         包含token和状态信息的字典
     """
     try:
         token = _svc().run_command(
-            command, shell_type, timeout, working_directory
+            command,
+            executable,
+            args,
+            shell_type,
+            timeout,
+            working_directory,
+            enable_streaming,
         )
         return {"token": token, "status": "pending", "message": "submitted"}
     except Exception as e:
@@ -130,6 +158,109 @@ def query_command_status(token: str) -> Dict[str, Any]:
 
 
 @app.tool(
+    name="enhanced_query_command_status",
+    description=(
+        "增强版命令状态查询，支持流式输出。"
+        "可以指定时间戳，只返回该时间戳之后的输出。"
+    ),
+    annotations={
+        "title": "增强版命令状态查询器",
+        "readOnlyHint": True,
+        "destructiveHint": False,
+        "idempotentHint": True,
+        "openWorldHint": False,
+    },
+)
+def enhanced_query_command_status(
+    token: str,
+    since_timestamp: Optional[int] = None,
+) -> Dict[str, Any]:
+    """
+    增强版命令状态查询，支持流式输出
+
+    Args:
+        token: 任务 token (GUID 字符串)
+        since_timestamp: 时间戳（毫秒），只返回此时间戳之后的输出
+
+    Returns:
+        包含命令状态和结果的字典
+    """
+    try:
+        result = _svc().enhanced_query_command_status(token, since_timestamp)
+        return result
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@app.tool(
+    name="send_command_input",
+    description=(
+        "向正在运行的命令发送输入。"
+        "用于交互式命令，例如需要用户输入的程序。"
+    ),
+    annotations={
+        "title": "命令输入发送器",
+        "readOnlyHint": False,
+        "destructiveHint": False,
+        "idempotentHint": False,
+        "openWorldHint": False,
+    },
+)
+def send_command_input(
+    token: str,
+    input: str,
+    append_newline: bool = True,
+) -> Dict[str, Any]:
+    """
+    向正在运行的命令发送输入
+
+    Args:
+        token: 任务 token (GUID 字符串)
+        input: 要发送的输入内容
+        append_newline: 是否在输入后追加换行符，默认 True
+
+    Returns:
+        包含操作结果的字典
+    """
+    try:
+        result = _svc().send_command_input(token, input, append_newline)
+        return result
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@app.tool(
+    name="terminate_command",
+    description=(
+        "终止正在运行的命令。"
+        "强制停止命令执行，适用于长时间运行的命令。"
+    ),
+    annotations={
+        "title": "命令终止器",
+        "readOnlyHint": False,
+        "destructiveHint": True,
+        "idempotentHint": False,
+        "openWorldHint": False,
+    },
+)
+def terminate_command(token: str) -> Dict[str, Any]:
+    """
+    终止正在运行的命令
+
+    Args:
+        token: 任务 token (GUID 字符串)
+
+    Returns:
+        包含操作结果的字典
+    """
+    try:
+        result = _svc().terminate_command(token)
+        return result
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@app.tool(
     name="get_version",
     description="获取 winterm-mcp 服务的版本信息和运行状态。",
     annotations={
@@ -147,33 +278,8 @@ def get_version_tool() -> Dict[str, Any]:
     Returns:
         包含版本号和服务状态的字典
     """
-    import os
-    import sys
-
     try:
-        # 尝试获取 PowerShell 路径信息
-        ps_path = None
-        ps_error = None
-        try:
-            from .service import _find_powershell
-            ps_path = _find_powershell()
-        except FileNotFoundError as e:
-            ps_error = str(e)
-
-        return {
-            "version": get_version(),
-            "service_status": "running",
-            "python_version": sys.version,
-            "platform": sys.platform,
-            "powershell_path": ps_path,
-            "powershell_error": ps_error,
-            "env": {
-                "WINTERM_POWERSHELL_PATH": os.environ.get(
-                    "WINTERM_POWERSHELL_PATH"
-                ),
-                "WINTERM_PYTHON_PATH": os.environ.get("WINTERM_PYTHON_PATH"),
-                "WINTERM_LOG_LEVEL": os.environ.get("WINTERM_LOG_LEVEL"),
-            }
-        }
+        result = _svc().get_version_info()
+        return result
     except Exception as e:
         return {"error": str(e), "version": __version__}
