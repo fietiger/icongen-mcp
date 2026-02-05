@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "pencil": {
+      "command": "c:\\Users\\ChengWentao\\.trae-cn\\extensions\\highagency.pencildev-0.6.20-universal\\out\\mcp-server-windows-x64.exe",
+      "args": [
+        "--ws-port",
+        "55109"
+      ],
+      "env": {},
+      "disabled": true
+    }
+  }
+}

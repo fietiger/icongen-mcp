@@ -30,6 +30,10 @@ def main():
         f"WINTERM_POWERSHELL_PATH: "
         f"{os.environ.get('WINTERM_POWERSHELL_PATH', '(not set)')}"
     )
+    logger.info(
+        f"WINTERM_PYTHON_PATH: "
+        f"{os.environ.get('WINTERM_PYTHON_PATH', '(not set)')}"
+    )
     logger.info("=" * 60)
 
     service = CommandService()

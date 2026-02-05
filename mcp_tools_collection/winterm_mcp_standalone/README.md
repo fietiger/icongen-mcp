@@ -1,7 +1,7 @@
 # winterm-mcp
 
-**更新日期**: 2026-01-29
-**版本**: 0.1.7
+**更新日期**: 2026-02-05
+**版本**: 0.1.8
 
 Windows Terminal MCP Service - 专门支持 Windows 终端的异步命令执行工具。
 
@@ -56,6 +56,7 @@ pip install -e .
       "env": {
         "WINTERM_POWERSHELL_PATH": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
         "WINTERM_CMD_PATH": "C:\\Windows\\System32\\cmd.exe",
+        "WINTERM_PYTHON_PATH": "C:\\Python310\\python.exe",
         "WINTERM_LOG_LEVEL": "DEBUG"
       }
     }
@@ -96,6 +97,24 @@ $env:WINTERM_POWERSHELL_PATH = "D:\CustomPath\powershell.exe"
       "args": ["winterm-mcp"],
       "env": {
         "WINTERM_POWERSHELL_PATH": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"
+      }
+    }
+  }
+}
+```
+
+#### Python 路径配置
+
+如果需要指定命令执行时使用的 Python 解释器，可以通过 `WINTERM_PYTHON_PATH` 环境变量指定 `python.exe` 的路径。winterm-mcp 会将该路径所在的目录添加到执行环境的 `PATH` 最前面。
+
+```json
+{
+  "mcpServers": {
+    "winterm": {
+      "command": "uvx",
+      "args": ["winterm-mcp"],
+      "env": {
+        "WINTERM_PYTHON_PATH": "D:\\Dev\\Python310\\python.exe"
       }
     }
   }
